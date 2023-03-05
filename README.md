@@ -119,6 +119,53 @@ sudo journalctl -u kyved -f -o cat
 curl localhost:26657/status
 ```
 
+Після синхронізації створюємо гаманець (не забуваємо зберегти мнемонік)
+```
+kyved keys add $KYVE_WALLET
+```
+
+Якщо гаманець уже є, то відновлюємо за допомогою мнемоніка
+```
+kyved keys add $KYVE_WALLET --recover
+```
+
+Додаємо змінну з адресою гаманця
+```
+KYVE_ADDR=$(kyved keys show $KYVE_WALLET -a)
+```
+
+Додаємо змінну в баш профіль
+```
+echo 'export KYVE_ADDR='${KYVE_ADDR} >> $HOME/.bash_profile 
+source $HOME/.bash_profile
+```
+
+Монети розсилатимуться батчами всім топ 10к фіналістами інтенсивайзд тестнету, перевірити баланс
+```
+kyved query bank balances $KYVE_ADDR
+```
+
+Если средства успешно поступили, то создаем валидатора (сумму указывайте свою, сколько хотите делегировать с кошелька, указывайте чуть меньше что бы хватило на комиссию)
+```
+kyved tx staking create-validator \
+ --amount 1000000tkyve \
+ --from $KYVE_WALLET \
+ --commission-max-change-rate "0.05" \
+ --commission-max-rate "0.2" \
+ --commission-rate "0.1" \
+ --min-self-delegation "1" \
+ --pubkey $(kyved tendermint show-validator) \
+ --moniker $KYVE_MONIKER \
+ --chain-id $KYVE_CHAIN
+ ```
+ 
+
+
+
+
+
+
+
 
 
 
