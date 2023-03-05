@@ -159,6 +159,43 @@ kyved tx staking create-validator \
  --chain-id $KYVE_CHAIN
  ```
  
+ Задаємо змінну з адресою валідатора
+ ```
+ KYVE_VALOPER=$(kyved keys show $KYVE_WALLET --bech val -a)
+ ```
+ 
+ І додаємо її в баш профіль
+ ```
+ echo 'export KYVE_VALOPER='${KYVE_VALOPER} >> $HOME/.bash_profile 
+source $HOME/.bash_profile
+```
+
+Перевірка статусу валідатора
+```
+kyved query staking validator $KYVE_VALOPER
+```
+
+Делегація коштів з гаманця на валідатора (суму вводите свою)
+```
+kyved tx staking delegate $KYVE_VALOPER 1000000tkyve --from $KYVE_WALLET
+```
+
+Ну і якщо раптом ваша нода потрапила у в'язницю, то вихід
+```
+kyved  tx slashing unjail --from $KYVE_WALLET
+```
+
+Якщо ви вирішили видалити ноду, виконайте таке
+```
+sudo systemctl stop kyved  
+sudo systemctl disable kyved  
+cd $HOME 
+rm /etc/systemd/system/kyved.service 
+rm /usr/local/bin/kyved  
+rm -r kyve/ 
+rm -r .kyve/
+```
+
 
 
 
